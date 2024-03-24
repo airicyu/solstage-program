@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-declare_id!("GWuqc8hjNbD4wRF37NAsdtF7kzKmMLbL17DJh65t8SsS");
+declare_id!("STAGYb3HZJW8CV1QEbhyc8WkLuJt44RtWHDpRgHe2pX");
 
 #[program]
 pub mod solstage_program {
@@ -9,12 +9,12 @@ pub mod solstage_program {
     pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
         msg!("Initializing Filter Source");
         let filter_source = &mut ctx.accounts.filter_source;
-        filter_source.signature = [0; 64];
+        filter_source.signature = [0; 32];
         filter_source.url = "".to_string();
         Ok(())
     }
 
-    pub fn SetFilter(ctx: Context<SetFilter>, signature: [u8; 64], url: String) -> Result<()> {
+    pub fn set_filter(ctx: Context<SetFilter>, signature: [u8; 32], url: String) -> Result<()> {
         msg!("Setting Filter");
         let filter_source = &mut ctx.accounts.filter_source;
         filter_source.signature = signature;
@@ -28,7 +28,7 @@ pub struct Initialize<'info> {
     #[account(mut)]
     pub signer: Signer<'info>,
 
-    #[account(init, payer = signer, space = 8 + 64 + 4 + 255,
+    #[account(init, payer = signer, space = 8 + 32 + 4 + 255,
         seeds = [b"filterSource:".as_ref(), signer.key.as_ref(), b":default".as_ref()], bump
     )]
     pub filter_source: Account<'info, FilterSource>,
@@ -52,6 +52,6 @@ pub struct SetFilter<'info> {
 
 #[account]
 pub struct FilterSource {
-    signature: [u8;64],
+    signature: [u8;32],
     url: String
 }
